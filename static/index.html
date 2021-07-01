@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" type="text/css" href="./style.css">
+  <!--オンライン上でこれ-->
+  <!--<script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>-->
+  <!--オフライン上でこれ-->
+  <script type="text/javascript" src="./desmos.js"></script>
+
+</head>
+<style type="text/css">
+    img {
+        border: 1px solid #000;
+    }
+</style>
+<body>
+  <div class="container">
+    <h3>Desmos Graph</h3>
+    </div>
+  <div class="container">
+    <div id="calculator" style="width: 100%; height: 400px;"></div>
+
+    <div class="form-group">
+      <label >Image format</label>
+      <form name="form1">
+        <select name="labelSize" class="form-control" >
+          <option selected>1</option>
+          <option>1.5</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+        </select>
+      </form>
+    </div>
+
+    <button class="btn btn-primary" id="screenshot-button" type="button">
+      <span id="convertButtonText">Convert</span>
+    </button>
+  </div>
+
+  <div class="container">
+    <div id="screenshot-container" style="display: none;">
+      <img style="display: none;" id="screenshot" width="100%" height="auto">
+      <img id="merge" width="100%" height="auto">
+      <a class="btn btn-download" id="downloadButton" role="button" download="graph.png" ontap href="">
+        <span id="convertButtonText">Save Image</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+
+    //set graph
+    var calcElt = document.getElementById('calculator');
+    var calculator = Desmos.GraphingCalculator(calcElt);
+    calculator.setExpression({latex: 'x^2+y^2=10'});
+
+    var btnElt = document.getElementById('screenshot-button');
+    btnElt.addEventListener('click', tex2img);
+    var containerElt = document.getElementById('screenshot-container');
+
+    var graph_img = document.getElementById('screenshot');
+    var merge = document.getElementById('merge');
+    var download = document.getElementById('downloadButton');
+
+    function tex2img() {
+      //desmos screenshot
+      graph_img.src = calculator.screenshot({
+        height: 300,
+        width: 300,
+        targetPixelRatio: 2
+      });
+
+      var e = calculator.getExpressions()[0]; // 先頭の式を得る
+      calculator.setExpression({id: e.id, lineWidth: "4"});  // 先頭の式のグラフの線を太くする
+      calculator.setExpression({ // 白い背景を追加
+        id: "background",
+        latex: "x<2^{10}",
+        color: "#ffffff",
+        fillOpacity: "1"
+      });
+      calculator.setExpression({ // ラベルを追加
+        id: "label", // ID は任意
+        latex: "(0, -4.5)", // 座標
+        color: "#000", // 色
+        label: "`" + e.latex + "`", // ラベルの文字
+        hidden: true, // 点を隠す
+        showLabel: true, // 文字を表示
+        secret: true, // 左側に現れないようにする
+        labelSize: "4" // 文字の大きさ
+      });
+
+      calculator.asyncScreenshot({
+        showLabels: true,
+        width: 1920,
+        height: 1080,
+        mathBounds: {left: -10, right: 10, bottom: -5.625, top: 5.625}
+      }, function(s) {
+        merge.src = s;
+        calculator.removeExpression({id: "background"});
+        calculator.removeExpression({id: "label"}); // グラフのラベルを削除
+        calculator.setExpression({id: e.id, lineWidth: e.lineWidth}); // グラフの線の太さを元にする
+      });
+
+      canvas = document.createElement('canvas');
+      canvas.width = 1920;
+      canvas.height = 1080;
+      var context = canvas.getContext('2d');
+
+      merge.onload = function() {
+        if (window.name != "any") {
+          context.drawImage(merge, 0, 0); // LaTeXを描画
+          var x = canvas.width/2 - 300;
+          var y = 100;
+          context.drawImage(graph_img, x, y, 600, 600); // グラフを描画
+          merge.src = canvas.toDataURL('image/jpeg');
+          download.href = merge.src;
+          window.name = "any";
+        } else {
+          window.name = "";
+        }
+      }
+
+      containerElt.style.display = 'block';
+    }
+  </script>
+  
+</body>
+</html>
