@@ -3,16 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Generate a graph and a LaTeX image using DesmosCaluculator">
+  <link rel="apple-touch-icon" sizes="180x180" href="./img/apple-touch-icon.png">
+  <link rel="icon" sizes="32x32" href="./img/icon-32x32.png">
+  <link rel="icon" sizes="16x16" href="./img/icon-16x16.png">
+  <meta property="og:url" content="https://teth-main.github.io/GraTeX-web/static/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Graph + LaTeX generator" />
+  <meta property="og:description" content=" GraTeX allows you to turn the equations you enter into DesmosCaluculator into graphs and LaTeX images that you can save for use in other documents." />
+  <meta property="og:site_name" content="GraTeX-web" />
+  <meta property="og:image" content="https://teth-main.github.io/GraTeX-web/static/img/card.png" />
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" type="text/css" href="./style.css">
   <script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+  <title>Graph + LaTeX generator</title>
 
 </head>
-<style type="text/css">
-    img {
-        border: 1px solid #000;
-    }
-</style>
 <body>
+  <nav class="navbar navbar-light bg-light">
+    <div class="navbar-header">
+      <h3><a class="navbar-brand" style="text-decoration: none;" href="/">Graph + LaTeX = GraTeX</a></h1>
+    </div>
+  </nav>
   <div class="container">
     <h3>GraTeX</h3>
     <p>
@@ -21,37 +33,60 @@
       Type the formula into DesmosCaluculator and click "Convert".
       <br>
       <a href="https://github.com/TETH-Main/GraTeX-web" target="_blank">The source code is available on GitHub.</a>
+      <br>
+      Thanks to <a href="https://twitter.com/graphemecluster" target="_blank">ぐらふぃーむ</a>, I was able to create this site. Thank you very much.
     </p>
   </div>
   <div class="container">
-    <div id="calculator" style="width: 100%; height: 400px;"></div>
-
-    <div class="form-group">
-      <label >Label Size</label>
-      <form name="form1">
-        <select name="labelSize" class="form-control" >
-          <option selected>1</option>
-          <option>1.5</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-        </select>
-      </form>
+    <div class="card">
+      <div class="card-body">
+        <div id="calculator" style="width: 100%; height: 400px; margin-bottom: 1rem;"></div>
+        <div class="form-row">
+          <div class="col col-2">
+            <button class="btn btn-primary" id="screenshot-button" type="button">
+              <span id="convertButtonText">Generate</span>
+            </button>
+          </div>
+          <div class="col col-1">
+            <div class="form-group">
+              <label >label Size</label>
+              <form name="form1">
+                <select name="labelSize" class="form-control" >
+                  <option value="1" selected>1</option>
+                  <option value="1.5">1.5</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <button class="btn btn-primary" id="screenshot-button" type="button">
-      <span id="convertButtonText">Convert</span>
-    </button>
+  <div class="container" id="generate-container" style="display: none;">
+    <div class="card">
+      <div class="card-body">
+        <img style="display: none;" id="screenshot" width="100%" height="auto">
+        <img id="merge" width="100%" height="auto">
+        <a class="btn btn-download" id="downloadButton" role="button" download="GraTeX.png" href="">
+          <span id="convertButtonText">Save Image</span>
+        </a>
+      </div>
+    </div>
   </div>
 
   <div class="container">
-    <div id="screenshot-container" style="display: none;">
-      <img style="display: none;" id="screenshot" width="100%" height="auto">
-      <img id="merge" width="100%" height="auto">
-      <a class="btn btn-download" id="downloadButton" role="button" download="graph.jpg" ontap href="">
-        <span id="convertButtonText">Save Image</span>
-      </a>
-    </div>
+    <hr>
+    <footer>
+      <p>
+        By <a href="https://twitter.com/TETH_Main">TETH_Main</a> | <a href="https://github.com/TETH-Main/GraTeX-web">souce code</a>
+        <br>
+        reference <a href="https://latex2image.joeraut.com/">LaTeX to Image</a>
+      </p>
+    </footer>
   </div>
 
   <script>
@@ -63,13 +98,16 @@
 
     var btnElt = document.getElementById('screenshot-button');
     btnElt.addEventListener('click', tex2img);
-    var containerElt = document.getElementById('screenshot-container');
+    var containerElt = document.getElementById('generate-container');
 
     var graph_img = document.getElementById('screenshot');
     var merge = document.getElementById('merge');
     var download = document.getElementById('downloadButton');
+    var formControl = document.forms.form1.elements.labelSize;
 
     function tex2img() {
+      containerElt.style.display = 'none';
+
       //desmos screenshot
       graph_img.src = calculator.screenshot({
         height: 300,
@@ -81,25 +119,26 @@
       calculator.setExpression({id: e.id, lineWidth: "4"});  // 先頭の式のグラフの線を太くする
       calculator.setExpression({ // 白い背景を追加
         id: "background",
-        latex: "x<2^{10}",
+        latex: "x^2>-1",
         color: "#ffffff",
-        fillOpacity: "1"
+        fillOpacity: "1",
+        secret: true
       });
-      calculator.setExpression({ // ラベルを追加
-        id: "label", // ID は任意
-        latex: "(0, -4.5)", // 座標
-        color: "#000", // 色
-        label: "`" + e.latex + "`", // ラベルの文字
-        hidden: true, // 点を隠す
-        showLabel: true, // 文字を表示
-        secret: true, // 左側に現れないようにする
-        labelSize: "4" // 文字の大きさ
+      calculator.setExpression({
+        id: "label",
+        latex: "(0, -4.5)",
+        color: "#000",
+        label: "`" + e.latex + "`",
+        hidden: true,
+        showLabel: true,
+        secret: true,
+        labelSize: formControl.value
       });
-
       calculator.asyncScreenshot({
         showLabels: true,
         width: 1920,
         height: 1080,
+        targetPixelRatio: 2,
         mathBounds: {left: -10, right: 10, bottom: -5.625, top: 5.625}
       }, function(s) {
         merge.src = s;
@@ -112,18 +151,19 @@
       canvas.width = 1920;
       canvas.height = 1080;
       var context = canvas.getContext('2d');
+      var f;
 
       merge.onload = function() {
-        if (window.name != "any") {
-          context.drawImage(merge, 0, 0); // LaTeXを描画
+        if (f != "flag") {
+          context.drawImage(merge, 0, 0, 1920, 1080); // LaTeXを描画
           var x = canvas.width/2 - 300;
           var y = 100;
           context.drawImage(graph_img, x, y, 600, 600); // グラフを描画
           merge.src = canvas.toDataURL('image/jpeg');
           download.href = merge.src;
-          window.name = "any";
+          f = "flag";
         } else {
-          window.name = "";
+          f = "";
         }
       }
 
