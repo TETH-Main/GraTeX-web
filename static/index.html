@@ -27,20 +27,38 @@
   </nav>
   <div class="container">
     <h3>GraTeX</h3>
-    <p>
-      GraTeX allows you to turn the equations you enter into DesmosCaluculator into graphs and LaTeX images that you can save for use in other documents.
-      <br>
-      Type the formula into DesmosCaluculator and click "Convert".
-      <br>
-      <a href="https://github.com/TETH-Main/GraTeX-web" target="_blank">The source code is available on GitHub.</a>
-      <br>
-      Thanks to <a href="https://twitter.com/graphemecluster" target="_blank">ぐらふぃーむ</a>, I was able to create this site. Thank you very much.
-    </p>
+    <div class="collapsibel-block">
+      <input type="checkbox" id="checkbox" />
+        <label for="checkbox" id="label">
+          <div id="folded">o description</div>
+          <div id="unfolded">x close</div>
+        </label>
+      <div id="unfolded-content">
+        <p>
+          GraTeX allows you to turn the equations you enter into DesmosCaluculator into graphs and LaTeX images that you can save for use in other documents.
+          <br>
+          Type the formula into DesmosCaluculator and click "Convert".
+          <br>
+          <a href="https://github.com/TETH-Main/GraTeX-web" target="_blank">The source code is available on GitHub.</a>
+          <br>
+          Thanks to <a href="https://twitter.com/graphemecluster" target="_blank">ぐらふぃーむ</a>, I was able to create this site. Thank you very much.
+        </p>
+      </div>
+      <style>
+        #label {cursor: pointer;}
+        #checkbox,
+        #unfolded,
+        #unfolded-content,
+        #checkbox:checked ~ #label #folded {display: none;}
+        #checkbox:checked ~ #label #unfolded,
+        #checkbox:checked ~ #unfolded-content {display: block;}
+      </style>
+    </div>
   </div>
   <div class="container">
+    <div id="calculator" style="width: 100%; height: 400px; margin-bottom: 1rem;"></div>
     <div class="card">
       <div class="card-body">
-        <div id="calculator" style="width: 100%; height: 400px; margin-bottom: 1rem;"></div>
         <div class="form-row">
           <div class="col col-2">
             <button class="btn btn-primary" id="screenshot-button" type="button">
@@ -69,8 +87,7 @@
   <div class="container" id="generate-container" style="display: none;">
     <div class="card">
       <div class="card-body">
-        <img style="display: none;" id="screenshot" width="100%" height="auto">
-        <img id="merge" width="100%" height="auto">
+        <img id="preview" width="100%" height="auto">
         <a class="btn btn-download" id="downloadButton" role="button" download="GraTeX.png" href="">
           <span id="convertButtonText">Save Image</span>
         </a>
@@ -97,27 +114,28 @@
     calculator.setExpression({latex: 'x^2+y^2=10'});
 
     var btnElt = document.getElementById('screenshot-button');
-    btnElt.addEventListener('click', tex2img);
+    btnElt.addEventListener('click', generate);
     var containerElt = document.getElementById('generate-container');
 
-    var graph_img = document.getElementById('screenshot');
-    var merge = document.getElementById('merge');
+    var preview = document.getElementById('preview');
     var download = document.getElementById('downloadButton');
     var formControl = document.forms.form1.elements.labelSize;
 
-    function tex2img() {
-      containerElt.style.display = 'none';
 
-      //desmos screenshot
-      graph_img.src = calculator.screenshot({
+    function generate() {
+      containerElt.style.display = 'none';
+      var graphImg = new Image();
+      var mergeImg = new Image();
+
+      graphImg.src = calculator.screenshot({
         height: 300,
         width: 300,
         targetPixelRatio: 2
       });
 
-      var e = calculator.getExpressions()[0]; // 先頭の式を得る
-      calculator.setExpression({id: e.id, lineWidth: "4"});  // 先頭の式のグラフの線を太くする
-      calculator.setExpression({ // 白い背景を追加
+      var e = calculator.getExpressions()[0];
+      calculator.setExpression({id: e.id, lineWidth: "4"});
+      calculator.setExpression({
         id: "background",
         latex: "x^2>-1",
         color: "#ffffff",
@@ -141,30 +159,22 @@
         targetPixelRatio: 2,
         mathBounds: {left: -10, right: 10, bottom: -5.625, top: 5.625}
       }, function(s) {
-        merge.src = s;
+        mergeImg.src = s;
         calculator.removeExpression({id: "background"});
-        calculator.removeExpression({id: "label"}); // グラフのラベルを削除
-        calculator.setExpression({id: e.id, lineWidth: e.lineWidth}); // グラフの線の太さを元にする
+        calculator.removeExpression({id: "label"});
+        calculator.setExpression({id: e.id, lineWidth: e.lineWidth});
       });
 
       canvas = document.createElement('canvas');
       canvas.width = 1920;
       canvas.height = 1080;
       var context = canvas.getContext('2d');
-      var f;
 
-      merge.onload = function() {
-        if (f != "flag") {
-          context.drawImage(merge, 0, 0, 1920, 1080); // LaTeXを描画
-          var x = canvas.width/2 - 300;
-          var y = 100;
-          context.drawImage(graph_img, x, y, 600, 600); // グラフを描画
-          merge.src = canvas.toDataURL('image/jpeg');
-          download.href = merge.src;
-          f = "flag";
-        } else {
-          f = "";
-        }
+      mergeImg.onload = function() {
+        context.drawImage(mergeImg, 0, 0, 1920, 1080);
+        context.drawImage(graphImg, 660, 100, 600, 600);
+        download.href = preview.src = canvas.toDataURL();
+        
       }
 
       containerElt.style.display = 'block';
