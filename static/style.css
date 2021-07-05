@@ -161,7 +161,7 @@
       align-content: center;
       align-items: flex-end;
     }
-    img.merge {
+    .preview {
       border: 1px solid #000;
     }
     #screenshot-button {
