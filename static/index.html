@@ -10,7 +10,7 @@
   <meta property="og:url" content="https://teth-main.github.io/GraTeX-web/" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Graph + LaTeX Generator" />
-  <meta property="og:description" content=" GraTeX allows you to turn the equations you enter into the Desmos Graphing Caluculator into graphs and LaTeX images that you can save for use in other documents." />
+  <meta property="og:description" content="GraTeX allows you to turn the equations you enter into the Desmos Graphing Caluculator into graphs and LaTeX images that you can save for use in other documents." />
   <meta property="og:site_name" content="GraTeX-web" />
   <meta property="og:image" content="https://teth-main.github.io/GraTeX-web/img/card.png" />
   <meta name="twitter:card" content="summary_large_image">
@@ -27,14 +27,14 @@
   <div class="container">
     <h3>GraTeX</h3>
     <p>
-      GraTeX allows you to turn the equations you enter into The Desmos Graphing Caluculator into graphs and LaTeX images that you can save for use in other documents.
-      <br>
-      Type the formula into DesmosCaluculator and click "Generate".
-      <br>
-      <a href="https://github.com/TETH-Main/GraTeX-web" target="_blank">The source code is available on GitHub.</a>
-      <br>
-      Thanks to <a href="https://twitter.com/graphemecluster" target="_blank">graphemecluster</a>, I was able to create this site. Thank you very much.
-    </p>
+    GraTeX allows you to turn the equations you enter into the Desmos Graphing Caluculator into graphs and LaTeX images that you can save for use in other documents.
+    <br>
+    Type the formula into the Desmos Graphing Caluculator and click “Generate”.
+    <br>
+    <a href="https://github.com/TETH-Main/GraTeX-web" target="_blank">The source code is available on GitHub.</a>
+    <br>
+    Thanks to <a href="https://twitter.com/graphemecluster" target="_blank">graphemecluster</a>, I was able to create this site. Thank you very much.
+  </p>
   </div>
   <div class="container">
     <div id="calculator"></div>
@@ -43,9 +43,9 @@
         <div class="form-row">
           <div class="col stretch">
             <div class="form-group">
-              <label >Label Size</label>
+              <label>Label Size</label>
               <form name="labelSize">
-                <select name="labelSize" class="form-control" >
+                <select name="labelSize" class="form-control">
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -61,7 +61,7 @@
               <label>Image Dimension</label>
               <form name="imageDimension">
                 <select name="imageDimension" class="form-control">
-                  <option value="1920,1080,640,96,740" selected>1920 × 1080 (16:9)</option>
+                  <option value="1920,1080,640,96,720" selected>1920 × 1080 (16:9)</option>
                   <option value="1280,720,432,64,480">1280 × 720 (16:9)</option>
                   <option value="1024,768,512,48,540">1024 × 768 (4:3)</option>
                   <option value="512,512,320,32,360">512 × 512 (1:1)</option>
@@ -116,7 +116,7 @@
     preview.onload = function() {
       containerElt.style.display = 'block';
       preview.onload = null;
-    }
+    };
 
     function generate() {
       var pageY = pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
@@ -139,8 +139,8 @@
       });
 
       graphImg.src = calculator.screenshot({
-        width: 300,
-        height: 300,
+        width: 320,
+        height: 320,
         targetPixelRatio: 2
       });
 
@@ -155,7 +155,7 @@
       });
       calculator.setExpression({
         id: 'label',
-        latex: '\\left(0, -' + labelPos + '\\right)',
+        latex: '\\left(0,-' + labelPos + '\\right)',
         color: 'black',
         label: '`' + e.latex + '`',
         hidden: true,
