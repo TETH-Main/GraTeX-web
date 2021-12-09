@@ -1,5 +1,6 @@
 # GraTeX-web
 ![preview](https://github.com/TETH-Main/GraTeX-web/blob/main/screenshot/preview.png)
+![preview](https://raw.githubusercontent.com/TETH-Main/GraTeX-web/main/screenshot/preview.png)
 GraTeX generates Graph and LaTeX together in an image.
 
 ## DEMO
