@@ -144,7 +144,7 @@
       ]).then(function() {
         context.drawImage(mergeImg, 0, 0, width, height);
         context.fillStyle = '#fff';
-        context.fillRect(0, height-20, width, height);
+        context.fillRect(0, height-2, width, height);
         context.drawImage(graphImg, (width - graphSize) >> 1, graphMargin, graphSize, graphSize);
         download.href = preview.src = canvas.toDataURL();
       });
