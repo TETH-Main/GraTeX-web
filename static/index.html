@@ -107,7 +107,9 @@
 
   <script>
     var calcElt = document.getElementById('calculator');
-    var calculator = Desmos.GraphingCalculator(calcElt);
+    var calculator = Desmos.GraphingCalculator(calcElt, {
+      pasteGraphLink: true
+    });
     calculator.setExpression({latex: 'x^2+y^2=10'});
 
     var btnElt = document.getElementById('screenshot-button');
