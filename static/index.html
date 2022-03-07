@@ -15,6 +15,13 @@
   <meta property="og:image" content="https://teth-main.github.io/GraTeX-web/static/img/card.png" />
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" type="text/css" href="./style.css">
+  <link rel="stylesheet" href="http://mathquill.com/lib/mathquill.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="/path/to/mathquill.js"></script>
+  <script src="http://mathquill.com/lib/mathquill.js"></script>
+  <script>
+    var MQ = MathQuill.getInterface(2);
+  </script>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-1JR9SZ33HJ"></script>
   <script>
@@ -71,6 +78,7 @@
               <form name="imageDimension">
                 <select name="imageDimension" class="form-control">
                   <option value="1920,1080,640,96,720" selected>1920 × 1080 (16:9)</option>
+                  <option value="1080,1080,640,96,720">1080 × 1080 (1:1)</option>
                   <option value="1280,720,432,64,480">1280 × 720 (16:9)</option>
                   <option value="1024,768,512,48,540">1024 × 768 (4:3)</option>
                   <option value="512,512,320,32,360">512 × 512 (1:1)</option>
@@ -82,6 +90,11 @@
             <button class="btn btn-primary" id="screenshot-button" type="button">
               <span>Generate</span>
             </button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col">
+            <label><input type="checkbox" id="credit">Add credit</label>
           </div>
         </div>
       </div>
@@ -116,6 +129,8 @@
     btnElt.addEventListener('click', generate);
     var containerElt = document.getElementById('generate-container');
 
+    var credit = document.getElementById("credit");
+
     var preview = document.getElementById('preview');
     var download = document.getElementById('downloadButton');
     var labelSize = document.forms.labelSize.elements[0];
@@ -148,6 +163,12 @@
         context.fillStyle = '#fff';
         context.fillRect(0, height-2, width, height);
         context.drawImage(graphImg, (width - graphSize) >> 1, graphMargin, graphSize, graphSize);
+
+        context.font = labelPos/16 + 'px serif';
+        context.fillStyle = 'black';
+        context.textAlign = 'right';
+        if(credit.checked)context.fillText('GraTeX @TETH_Main', width - 10, height - 10);
+
         download.href = preview.src = canvas.toDataURL();
       });
 
