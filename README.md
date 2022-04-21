@@ -6,12 +6,12 @@ GraTeX generates Graph and LaTeX together in an image.
 The application is accessible at https://teth-main.github.io/GraTeX-web/static/
 
 ## Usage
-1.　Put formula in DesmosCaluculator
+1.　Put formula in Desmos Graphing Caluculator
 2.　Click generate
 3.　Save Image
 
 ### option
-If you remove the grid and axes from the settings in the upper right corner of DesmosCaluculator, you will get a graph-only image.
+If you remove the grid and axes from the settings in the upper right corner of Desmos Graphing Caluculator, you will get a graph-only image.
 You can change the size of the text from LabelSize.
 It is recommended to set the text size to 1 for long expressions.
 
