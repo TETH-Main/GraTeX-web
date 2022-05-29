@@ -2,7 +2,7 @@
 ![preview](https://github.com/TETH-Main/GraTeX-web/blob/main/screenshot/preview.png)
 preview
 
-## important information
+## Important information
 Graph + LaTeX = GraTeX has been moved.
 The new URL is https://teth-main.github.io/GraTeX/.
 We apologize for the inconvenience, but please change your "favorites".
